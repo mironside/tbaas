@@ -1,0 +1,66 @@
+<html>
+<head>
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+	<link rel="stylesheet" href="http://yandex.st/highlightjs/8.0/styles/solarized_dark.min.css">
+
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+	<style>
+		.time { color: #cccccc; font-size: 10px }
+		img { width: 100% }
+	</style>
+	<script>
+		function formatTime(timestamp) {
+			var dt = new Date(timestamp * 1000);
+
+			var hours = dt.getHours();
+			var minutes = dt.getMinutes();
+			var seconds = dt.getSeconds();
+
+	    // the above dt.get...() functions return a single digit
+	    // so I prepend the zero here when needed
+	    if (hours < 10) 
+	    	hours = '0' + hours;
+
+	    if (minutes < 10) 
+	    	minutes = '0' + minutes;
+
+	    if (seconds < 10) 
+	    	seconds = '0' + seconds;
+
+	    return hours + ":" + minutes + ":" + seconds;
+	}       
+
+	function updateMessages(scroll) {
+		$.getJSON('/messages', function(data) {
+			var html = '';
+			for(var i in data) {
+				var msg = data[i];
+				html += "<div class=\"row\"><div class=\"col-xs-1\">" + msg.username + "</div><div class=\"col-xs-10\">" + msg.text + "</div><div class=\"col-xs-1 time\">" + formatTime(msg.timestamp) + "</div></div>"
+			}
+
+			if (document.body.scrollTop + document.body.clientHeight == document.body.scrollHeight) {
+				scroll = true;
+			}
+
+			$('#messages').html(html);
+
+			if (scroll) {
+				document.body.scrollTop = document.body.scrollHeight;
+			}
+		});
+	}
+
+	$(document).ready(function() {
+		updateMessages();
+		setInterval(function() { updateMessages(false); },1000);
+	});
+
+	</script>
+</head>
+<body>
+	<div class="container-fluid">
+		<div id="messages"></div>
+	</div>
+</body>
+</html>

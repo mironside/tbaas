@@ -1,0 +1,62 @@
+<html>
+<head>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+
+	<link rel="stylesheet" href="http://yandex.st/highlightjs/8.0/styles/solarized_dark.min.css">
+	<script src="http://yandex.st/highlightjs/8.0/highlight.min.js"></script>
+	<script src="http://yandex.st/highlightjs/8.0/languages/go.min.js"></script>
+
+	<style>
+		html, body { height: 100% }
+		#chat { width: 100%; height:100% }
+		#text { width: 100%; position: absolute; bottom: 0; }
+	</style>
+	<script>
+	function sendMessage() {
+		var text = $('#text').val();
+		if (text.substring(0, 3) == '```') {
+			text = $('<div/>').text(text).html();
+			text = text.replace(/\t/g, '    ')
+			result = hljs.highlightAuto(text.substring(3));
+			console.log(result);
+			text = '<pre><code class="hljs">' + result.value + '</code></pre>'
+		}
+		if ((text.substring(0, 8) == 'https://' || text.substring(0,7) == 'http://') &&
+			(text.substring(text.length-4) == '.gif' || text.substring(text.length-4) == '.png' || text.substring(text.length-4) == '.jpg')) {
+			text = '<img src="' + text + '">'
+		}
+
+		data = JSON.stringify({
+			username: $('#username').val(),
+			text: text
+		});
+
+
+		$.post('/messages', data).done(function() {
+			$('#chat')[0].contentWindow.updateMessages(true);
+		});
+		$('#text').val('');
+	}
+
+	$(document).ready(function() {
+		$('#text').keydown(function(event) {
+			if (event.keyCode == '13' && $('#text').val() != '') {
+				sendMessage();
+				return false;
+			}
+		});
+
+		$(window).resize(function() {
+			$('#chat').css({'height': $(window).height() - $('#text').outerHeight()});
+		});
+
+		$(window).trigger('resize');
+	});
+</script>
+</head>
+<body>
+	<iframe id="chat" src="/chat.html"></iframe>
+	<textarea id="text" rows="6" style="border:0;"></textarea>
+</body>
+</html>
