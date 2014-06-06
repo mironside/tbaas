@@ -44,8 +44,8 @@ func main() {
 	db, _ := sqlite3.Open(":memory:")
 	db.Exec("create table messages(timestamp, username, text)")
 
-	fmt.Println("talk to me...on port 8080")
+	fmt.Println("talk to me...on port 80")
 	http.Handle("/", http.FileServer(http.Dir("./")))
 	http.HandleFunc("/messages", MessagesHandler)
-	http.ListenAndServe(":8081", nil)
+	http.ListenAndServe(":80", nil)
 }
