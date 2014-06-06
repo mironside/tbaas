@@ -14,13 +14,13 @@ func POST_Messages(w http.ResponseWriter, r *http.Request) {
 	body, _ := ioutil.ReadAll(r.Body)
 	json.Unmarshal(body, &message)
 	fmt.Println(message)
-	db, _ := sqlite3.Open("test.db")
+	db, _ := sqlite3.Open(":memory:")
 	db.Exec("insert into messages (timestamp, username, text) values (?, ?, ?)", time.Now(), message["username"], message["text"])
 	db.Commit()
 }
 
 func GET_Messages(w http.ResponseWriter, r *http.Request) {
-	db, _ := sqlite3.Open("test.db")
+	db, _ := sqlite3.Open(":memory:")
 	messages := []map[string]interface{}{}
 	for s, err := db.Query("select * from messages order by timestamp asc"); err == nil; err = s.Next() {
 		row := make(sqlite3.RowMap)
@@ -41,7 +41,7 @@ func MessagesHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	db, _ := sqlite3.Open("test.db")
+	db, _ := sqlite3.Open(":memory:")
 	db.Exec("create table messages(timestamp, username, text)")
 
 	fmt.Println("talk to me...on port 8080")
