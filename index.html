@@ -11,7 +11,9 @@
 	<style>
 		html, body { height: 100% }
 		#chat { width: 100%; height:100% }
-		#text { width: 100%; position: absolute; bottom: 0; }
+		#wrapper { width: 100%; position: absolute; bottom: 0; }
+		#username { width: 100%; }
+		#text { width: 100%; }
 	</style>
 	<script>
 	function sendMessage() {
@@ -24,6 +26,17 @@
 			result = hljs.highlightAuto(text.substring(3));
 			console.log(result);
 			text = '<pre><code class="hljs">' + result.value + '</code></pre>'
+		}
+
+		// macros
+		if ( text == "(gabe)" ) {
+			text = "http://1.bp.blogspot.com/-qYhncswgrTs/Ur33bA0mcXI/AAAAAAAAPig/PYfV5qT6me4/s1600/gabening-intensifies.gif";
+		} else if ( text == "(gtr)" ) {
+			text = "http://fc03.deviantart.net/fs37/f/2008/251/9/c/Mario_Running_by_SpriterDex.gif"
+		} else if ( text == "(ghost)" ) {
+			text = "https://lh3.googleusercontent.com/-b3C9bAdS8eQ/UICMX73_vJI/AAAAAAAAFac/zPNkenDMnek/w320-h240-no/140173_o.gif";
+		} else if ( text == "(moss)" ) {
+			text = "https://lh3.googleusercontent.com/-X98vi6vstqU/UieO4KahRGI/AAAAAAAAGRU/4itf7NdMAMM/w245-h183-no/no-distractions.gif";
 		}
 
 		uri = URI.parse(text)
@@ -71,7 +84,7 @@
 		});
 
 		$(window).resize(function() {
-			$('#chat').css({'height': $(window).height() - $('#text').outerHeight()});
+			$('#chat').css({'height': $(window).height() - $('#text').outerHeight() - $('#username').outerHeight()});
 		});
 
 		$(window).trigger('resize');
@@ -80,6 +93,9 @@
 </head>
 <body>
 	<iframe id="chat" src="/chat.html"></iframe>
-	<textarea id="text" rows="6" style="border:0;"></textarea>
+	<div id="wrapper">
+	<textarea id="username" rows="1" style="border:0"></textarea>
+	<textarea id="text" rows="6" style="border:0"></textarea>
+	</div>
 </body>
 </html>

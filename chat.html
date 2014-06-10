@@ -7,7 +7,7 @@
 
 	<style>
 		.time { color: #cccccc; font-size: 10px }
-		img { width: 100% }
+		img { max-width: 100% }
 		.videoWrapper {
 			position: relative;
 			padding-bottom: 56.25%; /* 16:9 */
@@ -20,6 +20,20 @@
 			left: 0;
 			width: 100%;
 			height: 100%;
+		}
+		.username {
+			color: #AAAAAA;
+			text-align: left;
+			font-size: 12px;
+		}
+		.message {
+			width: 100%;
+			font-size: 12px;
+		}
+		.timestamp {
+			color: #AAAAAA;
+			text-align: right;
+			font-size: 12px;
 		}
 	</style>
 	<script>
@@ -45,12 +59,17 @@
 	}       
 
 	var since = 0
+	var username = '';
 	function updateMessages(scroll) {
 		$.getJSON('/messages?since_id=' + since, function(data) {
 			var html = '';
 			for(var i in data) {
 				var msg = data[i];
-				html += "<div class=\"row\"><div class=\"col-xs-1\">" + msg.username + "</div><div class=\"col-xs-10\">" + msg.text + "</div><div class=\"col-xs-1 time\">" + formatTime(msg.timestamp) + "</div></div>"
+				if (msg.username != username) {
+					html += "<div class=\"row\"><div class=\"col-xs-6 username\">" + msg.username + "</div><div class=\"col-xs-6 timestamp\">" + formatTime(msg.timestamp) + "</div></div>";
+					username = msg.username;
+				}
+				html += "<div class=\"row\"><div class=\"col-xs-12 message\">" + msg.text + "</div></div>";
 				since = msg.id;
 			}
 

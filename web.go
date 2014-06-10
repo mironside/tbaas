@@ -38,7 +38,7 @@ func GET_Messages(w http.ResponseWriter, r *http.Request) {
 	}
 	count, err := strconv.ParseInt(r.FormValue("count"), 10, 64)
 	if err != nil {
-		count = 10
+		count = 100
 	}
 
 	fmt.Println(sinceId, maxId, count)
