@@ -26,23 +26,28 @@
 			text = '<pre><code class="hljs">' + result.value + '</code></pre>'
 		}
 
-		// image
-		if ((text.substring(0, 8) == 'https://' || text.substring(0,7) == 'http://') &&
-			(text.substring(text.length-4) == '.gif' || text.substring(text.length-4) == '.png' || text.substring(text.length-4) == '.jpg')) {
-			text = '<img src="' + text + '">'
-		}
-
-		https://www.youtube.com/watch?v=45oLPOowjrY
 		uri = URI.parse(text)
 		query = URI.parseQuery(uri.query)
+		console.log(uri, query);
+		if (uri.protocol == 'http' || uri.protocol == 'https') {
 
-
-		// youtube
-		if ((uri.protocol == 'http' || uri.protocol == 'https') &&
-			uri.hostname == 'www.youtube.com' &&
-			'v' in query) {
-			text = '<div class="videoWrapper"><iframe src="https://www.youtube.com/embed/' + query['v'] + '" frameborder="0" allowfullscreen></iframe></div>'
+			// youtube
+			if (uri.hostname == 'www.youtube.com' && 'v' in query) {
+				text = '<div class="videoWrapper"><iframe src="https://www.youtube.com/embed/' + query['v'] + '?vq=hd720" frameborder="0" allowfullscreen></iframe></div>'
+			}
+			else if (uri.hostname == 'youtu.be') {
+				text = '<div class="videoWrapper"><iframe src="https://www.youtube.com/embed/' + uri.path.substring(1) + '?vq=hd720" frameborder="0" allowfullscreen></iframe></div>'
+			}
+			// image
+			else if (text.substring(text.length-4) == '.gif' || text.substring(text.length-4) == '.png' || text.substring(text.length-4) == '.jpg') {
+				text = '<img src="' + text + '">'
+			}
+			// link
+			else {
+				text = '<a href="' + text + '" target="_blank">' + text + '</a>'
+			}
 		}
+
 
 		data = JSON.stringify({
 			username: $('#username').val(),

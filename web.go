@@ -93,5 +93,5 @@ func main() {
 	fmt.Println("talk to me...on port 8080")
 	http.Handle("/", http.FileServer(http.Dir("./")))
 	http.HandleFunc("/messages", MessagesHandler)
-	http.ListenAndServeTLS(":8080", "cert.pem", "key.pem", nil)
+	http.ListenAndServeTLS(":https", "cert.pem", "key.pem", nil)
 }
