@@ -37,6 +37,8 @@
 			text = "https://lh3.googleusercontent.com/-b3C9bAdS8eQ/UICMX73_vJI/AAAAAAAAFac/zPNkenDMnek/w320-h240-no/140173_o.gif";
 		} else if ( text == "(moss)" ) {
 			text = "https://lh3.googleusercontent.com/-X98vi6vstqU/UieO4KahRGI/AAAAAAAAGRU/4itf7NdMAMM/w245-h183-no/no-distractions.gif";
+		} else if ( text == "(blob)" ) {
+			text = "http://www.mnn.com/sites/default/files/styles/featured_blog/public/blobfish.jpg";
 		}
 
 		uri = URI.parse(text)
@@ -83,7 +85,7 @@
 			$.getJSON("/version", function(data) {
 				var v = data;
 				if ( v != version ) {
-					$('#alert').html('<div class="alert alert-danger"><strong>New version available, please refresh!</strong></div>');
+					$('#alert').html('<div class="alert alert-danger"><strong>New version available! <a href="javascript:location.reload()">Click here</a> to refresh.</strong></div>');
 					$(window).trigger('resize');
 				} 
 			});
