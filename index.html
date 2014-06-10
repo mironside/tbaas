@@ -36,11 +36,12 @@
 		uri = URI.parse(text)
 		query = URI.parseQuery(uri.query)
 
+
 		// youtube
 		if ((uri.protocol == 'http' || uri.protocol == 'https') &&
 			uri.hostname == 'www.youtube.com' &&
 			'v' in query) {
-			text = '<iframe width="560" height="315" src="//www.youtube.com/embed/' + query['v'] + '" frameborder="0" allowfullscreen></iframe>'
+			text = '<div class="videoWrapper"><iframe src="https://www.youtube.com/embed/' + query['v'] + '" frameborder="0" allowfullscreen></iframe></div>'
 		}
 
 		data = JSON.stringify({
@@ -54,6 +55,7 @@
 		});
 		$('#text').val('');
 	}
+
 
 	$(document).ready(function() {
 		$('#text').keydown(function(event) {
