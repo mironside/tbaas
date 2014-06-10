@@ -31,19 +31,21 @@
 	    return hours + ":" + minutes + ":" + seconds;
 	}       
 
+	var since = 0
 	function updateMessages(scroll) {
-		$.getJSON('/messages', function(data) {
+		$.getJSON('/messages?since_id=' + since, function(data) {
 			var html = '';
 			for(var i in data) {
 				var msg = data[i];
 				html += "<div class=\"row\"><div class=\"col-xs-1\">" + msg.username + "</div><div class=\"col-xs-10\">" + msg.text + "</div><div class=\"col-xs-1 time\">" + formatTime(msg.timestamp) + "</div></div>"
+				since = msg.id;
 			}
 
 			if (document.body.scrollTop + document.body.clientHeight == document.body.scrollHeight) {
 				scroll = true;
 			}
 
-			$('#messages').html(html);
+			$('#messages').append(html);
 
 			if (scroll) {
 				document.body.scrollTop = document.body.scrollHeight;
