@@ -1,5 +1,5 @@
 <html>
-<head>
+<head> 
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 	<script src="//cdnjs.cloudflare.com/ajax/libs/URI.js/1.11.2/URI.min.js"></script>
@@ -14,6 +14,7 @@
 		#wrapper { width: 100%; position: absolute; bottom: 0; }
 		#username { width: 100%; }
 		#text { width: 100%; }
+		#alert .alert { margin: 0 }
 	</style>
 	<script>
 	function sendMessage() {
@@ -24,7 +25,6 @@
 			text = $('<div/>').text(text).html();
 			text = text.replace(/\t/g, '    ')
 			result = hljs.highlightAuto(text.substring(3));
-			console.log(result);
 			text = '<pre><code class="hljs">' + result.value + '</code></pre>'
 		}
 
@@ -41,7 +41,6 @@
 
 		uri = URI.parse(text)
 		query = URI.parseQuery(uri.query)
-		console.log(uri, query);
 		if (uri.protocol == 'http' || uri.protocol == 'https') {
 
 			// youtube
@@ -75,7 +74,21 @@
 	}
 
 
+	var version = "";
 	$(document).ready(function() {
+		$.getJSON("/version", function(data) {
+			version = data;
+		});
+		setInterval(function() {
+			$.getJSON("/version", function(data) {
+				var v = data;
+				if ( v != version ) {
+					$('#alert').html('<div class="alert alert-danger"><strong>New version available, please refresh!</strong></div>');
+					$(window).trigger('resize');
+				} 
+			});
+		}, 10000);
+
 		$('#text').keydown(function(event) {
 			if (event.keyCode == '13' && $('#text').val() != '') {
 				sendMessage();
@@ -84,16 +97,16 @@
 		});
 
 		$(window).resize(function() {
-			$('#chat').css({'height': $(window).height() - $('#text').outerHeight() - $('#username').outerHeight()});
+			$('#chat').css({'height': $(window).height() - $('#text').outerHeight() - $('#username').outerHeight() - $('#alert').outerHeight()});
 		});
-
+ 
 		$(window).trigger('resize');
 	});
 </script>
 </head>
 <body>
 	<iframe id="chat" src="/chat.html"></iframe>
-	<div id="wrapper">
+	<div id="alert"></div>
 	<textarea id="username" rows="1" style="border:0"></textarea>
 	<textarea id="text" rows="6" style="border:0"></textarea>
 	</div>

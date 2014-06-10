@@ -2,10 +2,12 @@ package main
 
 import (
 	"code.google.com/p/go-sqlite/go1/sqlite3"
+	"crypto/md5"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 )
@@ -86,6 +88,26 @@ func MessagesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func ComputeVersion() string {
+	hash := md5.New()
+	index, _ := os.Open("index.html")
+	indexData, _ := ioutil.ReadAll(index)
+	hash.Write(indexData)
+	index.Close()
+
+	chat, _ := os.Open("chat.html")
+	chatData, _ := ioutil.ReadAll(chat)
+	hash.Write(chatData)
+	chat.Close()
+
+	return fmt.Sprintf("%x", hash.Sum(nil))
+}
+
+func VersionHandler(w http.ResponseWriter, r *http.Request) {
+	body, _ := json.Marshal(ComputeVersion())
+	w.Write(body)
+}
+
 func main() {
 	db, _ := sqlite3.Open(db)
 	db.Exec("create table messages(id integer primary key autoincrement, timestamp, username, text)")
@@ -93,5 +115,6 @@ func main() {
 	fmt.Println("talk to me...on port 8080")
 	http.Handle("/", http.FileServer(http.Dir("./")))
 	http.HandleFunc("/messages", MessagesHandler)
+	http.HandleFunc("/version", VersionHandler)
 	http.ListenAndServeTLS(":https", "cert.pem", "key.pem", nil)
 }
