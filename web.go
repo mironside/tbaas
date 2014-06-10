@@ -38,7 +38,7 @@ func GET_Messages(w http.ResponseWriter, r *http.Request) {
 	}
 	count, err := strconv.ParseInt(r.FormValue("count"), 10, 64)
 	if err != nil {
-		count = 0
+		count = 10
 	}
 
 	fmt.Println(sinceId, maxId, count)
@@ -93,5 +93,5 @@ func main() {
 	fmt.Println("talk to me...on port 8080")
 	http.Handle("/", http.FileServer(http.Dir("./")))
 	http.HandleFunc("/messages", MessagesHandler)
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServeTLS(":8080", "cert.pem", "key.pem", nil)
 }
