@@ -2,6 +2,7 @@
 <head>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+	<script src="//cdnjs.cloudflare.com/ajax/libs/URI.js/1.11.2/URI.min.js"></script>
 
 	<link rel="stylesheet" href="http://yandex.st/highlightjs/8.0/styles/solarized_dark.min.css">
 	<script src="http://yandex.st/highlightjs/8.0/highlight.min.js"></script>
@@ -15,6 +16,8 @@
 	<script>
 	function sendMessage() {
 		var text = $('#text').val();
+
+		// code
 		if (text.substring(0, 3) == '```') {
 			text = $('<div/>').text(text).html();
 			text = text.replace(/\t/g, '    ')
@@ -22,9 +25,22 @@
 			console.log(result);
 			text = '<pre><code class="hljs">' + result.value + '</code></pre>'
 		}
+
+		// image
 		if ((text.substring(0, 8) == 'https://' || text.substring(0,7) == 'http://') &&
 			(text.substring(text.length-4) == '.gif' || text.substring(text.length-4) == '.png' || text.substring(text.length-4) == '.jpg')) {
 			text = '<img src="' + text + '">'
+		}
+
+		https://www.youtube.com/watch?v=45oLPOowjrY
+		uri = URI.parse(text)
+		query = URI.parseQuery(uri.query)
+
+		// youtube
+		if ((uri.protocol == 'http' || uri.protocol == 'https') &&
+			uri.hostname == 'www.youtube.com' &&
+			'v' in query) {
+			text = '<iframe width="560" height="315" src="//www.youtube.com/embed/' + query['v'] + '" frameborder="0" allowfullscreen></iframe>'
 		}
 
 		data = JSON.stringify({
